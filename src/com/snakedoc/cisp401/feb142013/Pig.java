@@ -64,14 +64,14 @@ public class Pig {
 	public static void gameLoop() {
 		rollResult = 0;
 		System.out.println("Current Player Num: " + currentPlayer);
-		while (playerScore < 100 || cpuScore < 100 || !quitGame) {
+		while ((playerScore < 100 || cpuScore < 100) && !quitGame) {
 			if (currentPlayer == HUMAN) {
 				playerTurn();
 			} else if (currentPlayer == CPU) {
 				cpuTurn();
 			}
 			rollResult = 0;
-			currentRoundScore = 0;
+//			currentRoundScore = 0;
 		}
 	}
 	/** Rolls a "six sided dice" and returns a 
@@ -168,10 +168,12 @@ public class Pig {
 		System.out.print("\nNext Player: ");
 		if (currentPlayer == HUMAN) {
 			addScore();
+			currentRoundScore = 0;
 			currentPlayer = CPU;
 			System.out.println("CPU Player");
 		} else if (currentPlayer == CPU) {
 			addScore();
+			currentRoundScore = 0;
 			currentPlayer = HUMAN;
 			System.out.println("Human Player");
 		}
@@ -207,5 +209,6 @@ public class Pig {
 			default: 
 				System.out.println("\nCome Back So I Can Win Again!");
 		}
+		endGame();
 	}
 }
