@@ -40,7 +40,11 @@ public class Pig {
 		initialize();
 		gameLoop();
 	}
-	
+	/**
+	 * method is called to initialize the game,
+	 * prints banner and game rules then determines
+	 * the first player and starts game
+	 */
 	public static void initialize() {
 		System.out.println("########################################\n" +
 						   "#      Welcome To The Game of Pig!     #\n" +
@@ -61,6 +65,12 @@ public class Pig {
 			cpuTurn();
 		}
 	}
+	/**
+	 * Loop run while game is working,
+	 * continues to loop until either a
+	 * player reaches game ending score (100)
+	 * or quits the game from the menu
+	 */
 	public static void gameLoop() {
 		rollResult = 0;
 		System.out.println("Current Player Num: " + currentPlayer);
@@ -71,19 +81,27 @@ public class Pig {
 				cpuTurn();
 			}
 			rollResult = 0;
-//			currentRoundScore = 0;
 		}
 	}
-	/** Rolls a "six sided dice" and returns a 
+	/**
+	 *  Rolls a "six sided dice" and returns a 
 	 * random number between 1 and 6 
 	 **/
 	public static int rollSixSideDice() {
 		return (int) (1 + (Math.random() * 6));
 	}
+	/**
+	 * Determines the first player upon program startup
+	 * @return the number of the first player (1 for Human 2 for CPU)
+	 */
 	public static int determineFirstPlayer() {
 		System.out.println("\nDetermining who shall play first...");
 		return (int)(1 + (Math.random() * 2));
 	}
+	/**
+	 * Method is called at the start of the Human Player turn,
+	 * is responsible for kicking off all player actions
+	 */
 	public static void playerTurn() {
 		System.out.println("\nPlayer Turn: ");
 		displayScore();
@@ -92,13 +110,17 @@ public class Pig {
 		
 		
 	}
+	/**
+	 * Method is called at the start of the CPU Player turn,
+	 * is responsible for kicking off all cpu player actions
+	 */
 	public static void cpuTurn() {
 		System.out.println("\nCPU Turn: ");
 		displayScore();
 		determineAction(1);
 	}
 	/**
-	 * Displays Player and CPU Player Scores
+	 * Displays Player and CPU Player Scores to stdout
 	 */
 	public static void displayScore() {
 		System.out.println("");
@@ -129,8 +151,15 @@ public class Pig {
 			System.out.print("\nEnter Choice: ");
 			option = input.nextInt();
 		}
+		input.close();
 		return option;
 	}
+	/**
+	 * Determines the action to perform based on the 
+	 * player's selected option number
+	 * @param option
+	 * 			Number of option player selected
+	 */
 	public static void determineAction(int option) {
 		if (option == 1) {
 			rollResult = rollSixSideDice();
@@ -142,6 +171,13 @@ public class Pig {
 			quitGame();
 		}
 	}
+	/**
+	 * Validates the turn after dice has been rolled.
+	 * If dice roll is equal to 1, then round score is reset
+	 * and round ends. Else, roll is valid.
+	 * @return
+	 * 		if round should continue or not
+	 */
 	public static boolean validateTurn() {
 		boolean continueTurn = false;
 		if (rollResult == 1) {
@@ -156,6 +192,10 @@ public class Pig {
 		}
 		return continueTurn;
 	}
+	/**
+	 * Adds the current round score to the
+	 * running game total of the current player
+	 */
 	public static void addScore() {
 		if (currentPlayer == HUMAN) {
 			playerScore += currentRoundScore;
@@ -163,6 +203,9 @@ public class Pig {
 			cpuScore += currentRoundScore;
 		}
 	}
+	/**
+	 * Runs end of round routines
+	 */
 	public static void endRound() {
 		System.out.println("\nEnd Of Round!");
 		System.out.print("\nNext Player: ");
@@ -178,6 +221,9 @@ public class Pig {
 			System.out.println("Human Player");
 		}
 	}
+	/**
+	 * Runs end of game routines
+	 */
 	public static void endGame() {
 		quitGame = true;
 		System.out.println("\nFinal Score -- \n\tPlayer: " + playerScore + " | CPU: " + cpuScore);
@@ -188,6 +234,11 @@ public class Pig {
 		}
 		System.out.println("\nThanks For Playing!");
 	}
+	/**
+	 * runs routines for when game is quit early
+	 * by player including a random exit "jeer" at the player
+	 * for quiting early.
+	 */
 	public static void quitGame() {
 		quitGame = true;
 		int ran = (int)(1 + (Math.random() * 5));
@@ -210,5 +261,14 @@ public class Pig {
 				System.out.println("\nCome Back So I Can Win Again!");
 		}
 		endGame();
+	}
+	/**
+	 * prints enough blank lines to clear the immediate
+	 * focus of the screen/console
+	 */
+	public static void clearScreen() {
+		for (int i = 0; i < 25; i++) {
+			System.out.println("");
+		}
 	}
 }
