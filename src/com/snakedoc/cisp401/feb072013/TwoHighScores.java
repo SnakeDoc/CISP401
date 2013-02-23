@@ -19,7 +19,8 @@ public class TwoHighScores {
 			if (scoreTemp > scoreFirst) {
 				scoreFirst = scoreTemp;
 				nameFirst = nameTemp;
-			} else if (scoreTemp > scoreSecond && scoreTemp < scoreFirst) {
+			} 
+			else if (scoreTemp > scoreSecond && scoreTemp < scoreFirst) {
 				scoreSecond = scoreTemp;
 				nameSecond = nameTemp;
 			}

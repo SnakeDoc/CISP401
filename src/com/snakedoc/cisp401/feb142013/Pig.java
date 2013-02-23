@@ -30,6 +30,12 @@ import java.util.Scanner;
 public class Pig {
 	static final int HUMAN = 1;
 	static final int CPU = 2;
+	static final int FIVE_SECOND = (1000 * 5);
+	static final int THREE_SECOND = (1000 * 3);
+	static final int SECOND = (1000 * 1);
+	static final int HALF_SECOND = (int)(1000 * .5);
+	static final int CLR = 50; // number of lines to clear console screen
+	
 	static int rollResult = 0;
 	static int currentRoundScore = 0;
 	static int cpuScore = 0;
@@ -57,13 +63,23 @@ public class Pig {
 				"is added to the player's turn total and the player's turn continues. " +
 				"\n\nhold - The turn total is added to the player's score and it " +
 				"becomes the opponent's turn.\n");
-		currentPlayer = determineFirstPlayer();
-		System.out.println("First Player: " + currentPlayer);
+		sleep(FIVE_SECOND);
+		System.out.println("Determining who shall play first...");
+		currentPlayer = getRandomPlayer();
+		sleep(THREE_SECOND);
+		System.out.print("\nFirst Player: ");
 		if (currentPlayer == HUMAN) {
+			System.out.println("Human Player");
+			sleep(THREE_SECOND);
+			clearScreen(CLR);
 			playerTurn();
 		} else if (currentPlayer == CPU) {
+			System.out.println("CPU Player");
+			sleep(THREE_SECOND);
+			clearScreen(CLR);
 			cpuTurn();
 		}
+		sleep(SECOND);
 	}
 	/**
 	 * Loop run while game is working,
@@ -74,13 +90,15 @@ public class Pig {
 	public static void gameLoop() {
 		rollResult = 0;
 		System.out.println("Current Player Num: " + currentPlayer);
-		while ((playerScore < 100 || cpuScore < 100) && !quitGame) {
+		while ((playerScore < 100 && cpuScore < 100) && !quitGame) {
 			if (currentPlayer == HUMAN) {
 				playerTurn();
 			} else if (currentPlayer == CPU) {
 				cpuTurn();
 			}
 			rollResult = 0;
+			sleep(HALF_SECOND);
+			clearScreen(CLR); // clear enough lines to blank console
 		}
 	}
 	/**
@@ -94,8 +112,7 @@ public class Pig {
 	 * Determines the first player upon program startup
 	 * @return the number of the first player (1 for Human 2 for CPU)
 	 */
-	public static int determineFirstPlayer() {
-		System.out.println("\nDetermining who shall play first...");
+	public static int getRandomPlayer() {
 		return (int)(1 + (Math.random() * 2));
 	}
 	/**
@@ -107,8 +124,7 @@ public class Pig {
 		displayScore();
 		int option = getOption();
 		determineAction(option);
-		
-		
+		sleep(HALF_SECOND);
 	}
 	/**
 	 * Method is called at the start of the CPU Player turn,
@@ -118,6 +134,7 @@ public class Pig {
 		System.out.println("\nCPU Turn: ");
 		displayScore();
 		determineAction(1);
+		sleep(HALF_SECOND);
 	}
 	/**
 	 * Displays Player and CPU Player Scores to stdout
@@ -151,7 +168,7 @@ public class Pig {
 			System.out.print("\nEnter Choice: ");
 			option = input.nextInt();
 		}
-		input.close();
+//		input.close();
 		return option;
 	}
 	/**
@@ -208,6 +225,7 @@ public class Pig {
 	 */
 	public static void endRound() {
 		System.out.println("\nEnd Of Round!");
+		sleep(HALF_SECOND);
 		System.out.print("\nNext Player: ");
 		if (currentPlayer == HUMAN) {
 			addScore();
@@ -220,12 +238,14 @@ public class Pig {
 			currentPlayer = HUMAN;
 			System.out.println("Human Player");
 		}
+		sleep(HALF_SECOND);
 	}
 	/**
 	 * Runs end of game routines
 	 */
 	public static void endGame() {
 		quitGame = true;
+		sleep(HALF_SECOND);
 		System.out.println("\nFinal Score -- \n\tPlayer: " + playerScore + " | CPU: " + cpuScore);
 		if (playerScore > cpuScore) {
 			System.out.println("\nCongrats! You Won!");
@@ -233,13 +253,15 @@ public class Pig {
 			System.out.println("\nBetter Luck Next Time!");
 		}
 		System.out.println("\nThanks For Playing!");
+		sleep(HALF_SECOND);
 	}
 	/**
 	 * runs routines for when game is quit early
 	 * by player including a random exit "jeer" at the player
-	 * for quiting early.
+	 * for quitting early.
 	 */
 	public static void quitGame() {
+		sleep(HALF_SECOND);
 		quitGame = true;
 		int ran = (int)(1 + (Math.random() * 5));
 		switch (ran) {
@@ -260,15 +282,27 @@ public class Pig {
 			default: 
 				System.out.println("\nCome Back So I Can Win Again!");
 		}
+		sleep(HALF_SECOND);
 		endGame();
 	}
 	/**
-	 * prints enough blank lines to clear the immediate
-	 * focus of the screen/console
+	 * utility method that prints enough blank lines 
+	 * to clear the immediate focus of the screen/console
 	 */
-	public static void clearScreen() {
-		for (int i = 0; i < 25; i++) {
+	public static void clearScreen(int lines) {
+		for (int i = 0; i < lines; i++) {
 			System.out.println("");
+		}
+	}
+	/**
+	 * utility method to sleep the thread
+	 * for the input time in milliseconds
+	 */
+	public static void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }
