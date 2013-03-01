@@ -28,24 +28,31 @@ package com.snakedoc.cisp401.feb142013;
 import java.util.Scanner;
 
 public class Pig {
+	
+	// Declare constants
 	static final int HUMAN = 1;
 	static final int CPU = 2;
 	static final int FIVE_SECOND = (1000 * 5);
 	static final int THREE_SECOND = (1000 * 3);
+	static final int TWO_SECOND = (1000 * 2);
 	static final int SECOND = (1000 * 1);
 	static final int HALF_SECOND = (int)(1000 * .5);
 	static final int CLR = 50; // number of lines to clear console screen
 	
+	// Declare variables
 	static int rollResult = 0;
 	static int currentRoundScore = 0;
 	static int cpuScore = 0;
 	static int playerScore = 0;
 	static int currentPlayer = 0;
 	static boolean quitGame = false;
+	
+	// begin main
 	public static void main(String[] args) {
 		initialize();
 		gameLoop();
 	}
+	
 	/**
 	 * method is called to initialize the game,
 	 * prints banner and game rules then determines
@@ -63,10 +70,13 @@ public class Pig {
 				"is added to the player's turn total and the player's turn continues. " +
 				"\n\nhold - The turn total is added to the player's score and it " +
 				"becomes the opponent's turn.\n");
-		sleep(FIVE_SECOND);
+		
+		System.out.print("\nPress [ENTER] to continue...\n");
+		getInputStr();
+		
 		System.out.println("Determining who shall play first...");
 		currentPlayer = getRandomPlayer();
-		sleep(THREE_SECOND);
+		
 		System.out.print("\nFirst Player: ");
 		if (currentPlayer == HUMAN) {
 			System.out.println("Human Player");
@@ -81,6 +91,7 @@ public class Pig {
 		}
 		sleep(SECOND);
 	}
+	
 	/**
 	 * Loop run while game is working,
 	 * continues to loop until either a
@@ -89,7 +100,6 @@ public class Pig {
 	 */
 	public static void gameLoop() {
 		rollResult = 0;
-		System.out.println("Current Player Num: " + currentPlayer);
 		while ((playerScore < 100 && cpuScore < 100) && !quitGame) {
 			if (currentPlayer == HUMAN) {
 				playerTurn();
@@ -101,6 +111,7 @@ public class Pig {
 			clearScreen(CLR); // clear enough lines to blank console
 		}
 	}
+	
 	/**
 	 *  Rolls a "six sided dice" and returns a 
 	 * random number between 1 and 6 
@@ -108,6 +119,7 @@ public class Pig {
 	public static int rollSixSideDice() {
 		return (int) (1 + (Math.random() * 6));
 	}
+	
 	/**
 	 * Determines the first player upon program startup
 	 * @return the number of the first player (1 for Human 2 for CPU)
@@ -115,6 +127,7 @@ public class Pig {
 	public static int getRandomPlayer() {
 		return (int)(1 + (Math.random() * 2));
 	}
+	
 	/**
 	 * Method is called at the start of the Human Player turn,
 	 * is responsible for kicking off all player actions
@@ -126,6 +139,7 @@ public class Pig {
 		determineAction(option);
 		sleep(HALF_SECOND);
 	}
+	
 	/**
 	 * Method is called at the start of the CPU Player turn,
 	 * is responsible for kicking off all cpu player actions
@@ -133,9 +147,47 @@ public class Pig {
 	public static void cpuTurn() {
 		System.out.println("\nCPU Turn: ");
 		displayScore();
-		determineAction(1);
+		runAI();
 		sleep(HALF_SECOND);
 	}
+	
+	/**
+	 * AI for CPU Player
+	 * determines what action to take
+	 */
+	public static void runAI() {
+		int num = (int)(1 + (Math.random() * 10));
+		if (currentRoundScore >= 10) {
+			if (num >= 8) {
+				determineAction(1); // very conservative
+			} else {
+				determineAction(2); // quit round
+			}
+		} else if (currentRoundScore >= 7) {
+			if (num >= 6) {
+				determineAction(1); // moderately conservative
+			} else {
+				determineAction(2); // quit round
+			}
+		} else if (currentRoundScore >= 4) {
+			if (num >= 4) {
+				determineAction(1); // mildly aggressive
+			} else {
+				determineAction(2); // quit round
+			}
+		} else if (currentRoundScore >= 2) {
+			if (num >= 2) {
+				determineAction(1); // moderately aggressive
+			} else {
+				determineAction(2); // quit round
+			}
+		} else if (currentRoundScore >= 1) {
+			determineAction(1); // very agressive
+		} else {
+			determineAction(1); // try to get on score board
+		}
+	}
+	
 	/**
 	 * Displays Player and CPU Player Scores to stdout
 	 */
@@ -150,6 +202,17 @@ public class Pig {
 		}
 		System.out.print(" | Round Score: " + currentRoundScore);
 	}
+	
+	/**
+	 * Gets input from stdin
+	 * @return user input string
+	 */
+	public static String getInputStr() {
+		Scanner input = new Scanner(System.in);
+		String str = input.nextLine();
+		return str;
+	}
+	
 	/**
 	 * Gets user input option from command line
 	 * and if the input option is valid, return
@@ -160,17 +223,18 @@ public class Pig {
 		Scanner input = new Scanner(System.in);
 		System.out.println("\nOptions:\n   1) Roll Dice\n   2) Hold Turn (Next Player)\n   " +
 				"3) Quit Game (Sore Loser!)");
+		System.out.print("\nEnter Option Number: ");
 		int option = input.nextInt();
 		while (option > 3 || option < 1) {
 			System.out.println("\nInvalid Option!");
 			System.out.println("\nOptions:\n   1) Roll Dice\n   2) Hold Turn (Next Player)\n   " +
 					"3) Quit Game (Sore Loser!)");
-			System.out.print("\nEnter Choice: ");
+			System.out.print("\nEnter Option Number: ");
 			option = input.nextInt();
 		}
-//		input.close();
 		return option;
 	}
+	
 	/**
 	 * Determines the action to perform based on the 
 	 * player's selected option number
@@ -178,9 +242,10 @@ public class Pig {
 	 * 			Number of option player selected
 	 */
 	public static void determineAction(int option) {
+		sleep(TWO_SECOND);
 		if (option == 1) {
 			rollResult = rollSixSideDice();
-			System.out.println("\nThe roll was: " + rollResult);
+			System.out.println("\n\nThe roll was: " + rollResult);
 			validateTurn();
 		} else if (option == 2) {
 			endRound();
@@ -188,6 +253,7 @@ public class Pig {
 			quitGame();
 		}
 	}
+	
 	/**
 	 * Validates the turn after dice has been rolled.
 	 * If dice roll is equal to 1, then round score is reset
@@ -197,18 +263,24 @@ public class Pig {
 	 */
 	public static boolean validateTurn() {
 		boolean continueTurn = false;
+		sleep(THREE_SECOND);
 		if (rollResult == 1) {
 			currentRoundScore = 0;
+			clearScreen(CLR);
 			System.out.println("\nWhoops! Looks like your round score is now: " + currentRoundScore + " (sucka!)");
+			sleep(THREE_SECOND);
 			endRound();
 			continueTurn = false;
 		} else {
 			currentRoundScore += rollResult;
-			System.out.println("\nFewww... Safe... For now.\nNew Round Score: " + currentRoundScore);
+			clearScreen(CLR);
+			System.out.println("\nFewww... Safe... For now.\n\nNew Round Score: " + currentRoundScore + "\n");
+			sleep(THREE_SECOND);
 			continueTurn = true;
 		}
 		return continueTurn;
 	}
+	
 	/**
 	 * Adds the current round score to the
 	 * running game total of the current player
@@ -220,6 +292,7 @@ public class Pig {
 			cpuScore += currentRoundScore;
 		}
 	}
+	
 	/**
 	 * Runs end of round routines
 	 */
@@ -240,6 +313,7 @@ public class Pig {
 		}
 		sleep(HALF_SECOND);
 	}
+	
 	/**
 	 * Runs end of game routines
 	 */
@@ -255,6 +329,7 @@ public class Pig {
 		System.out.println("\nThanks For Playing!");
 		sleep(HALF_SECOND);
 	}
+	
 	/**
 	 * runs routines for when game is quit early
 	 * by player including a random exit "jeer" at the player
@@ -285,6 +360,7 @@ public class Pig {
 		sleep(HALF_SECOND);
 		endGame();
 	}
+	
 	/**
 	 * utility method that prints enough blank lines 
 	 * to clear the immediate focus of the screen/console
@@ -294,6 +370,7 @@ public class Pig {
 			System.out.println("");
 		}
 	}
+	
 	/**
 	 * utility method to sleep the thread
 	 * for the input time in milliseconds
